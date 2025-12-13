@@ -5,6 +5,7 @@ import (
 	"strings"
 	"net/http"
 	"net/url"
+	"github.com/boltdb/bolt"
 )
 
 func normalizeUrl(raw_url string, base *url.URL) string {
@@ -34,7 +35,7 @@ func normalizeUrl(raw_url string, base *url.URL) string {
 	return u.String()
 }
 
-func (c *Crawler) visit(base string, links *Stack[string]) {
+func (c *Crawler) visit(db *bolt.DB,base string, links *Stack[string]) {
 	res, err := http.Get(base)
 	if err != nil {
 		panic(err)
@@ -46,6 +47,8 @@ func (c *Crawler) visit(base string, links *Stack[string]) {
 		if err != nil {
 			panic(err)
 		}
+		doc.Find("nav, footer, aside, script, style").Remove()
+
 		doc.Find("a").Each(func(i int, s *goquery.Selection) {
 			if href, exists := s.Attr("href"); exists {
 				var site string
@@ -58,6 +61,14 @@ func (c *Crawler) visit(base string, links *Stack[string]) {
 				
 			}	
 		})
+
+		title:=doc.Find("title").Text()
+		body:=doc.Find("body").Text()
+		tokens:=tokenize(title+" "+body)
+
+		for _,token:=range(tokens){
+			addToIndex(db,token,base)
+		}
 
 	}
 }

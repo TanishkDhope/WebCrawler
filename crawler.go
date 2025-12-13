@@ -3,6 +3,9 @@ package main
 import (
 	"sync"
 	//"fmt"
+	"github.com/boltdb/bolt"
+
+
 )
 
 
@@ -21,7 +24,8 @@ func (c *Crawler) incr(){
 	c.count++
 }
 */
-func (c *Crawler) crawl(limit int){
+func (c *Crawler) crawl(limit int,db *bolt.DB){
+
 
 
 	c.visited=make(map[string] bool)
@@ -72,7 +76,7 @@ func (c *Crawler) crawl(limit int){
                 c.mu.Unlock()
 
                 // Visit the URL
-                c.visit(url, &links)
+                c.visit(db,url, &links)
 
             }
         }()
