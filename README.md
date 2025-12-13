@@ -30,7 +30,7 @@ A basic search engine and web crawler in Go. It crawls pages starting from one o
 
 ```bash
 # From the project root
-cd http_client
+cd WebCrawler
 
 # Initialize (if not already)
 go mod tidy
