@@ -10,7 +10,7 @@ type Crawler struct{
 	url string
 	count int
 	limit int
-	visited Stack[string]
+	visited map[string] bool
 	mu sync.Mutex
 }
 
@@ -24,10 +24,7 @@ func (c *Crawler) incr(){
 func (c *Crawler) crawl(limit int){
 
 
-	c.visited=Stack[string]{
-			data: make([]string,0),
-			len: 0,
-		}
+	c.visited=make(map[string] bool)
 	
 	c.limit=limit
 
@@ -70,7 +67,7 @@ func (c *Crawler) crawl(limit int){
                     return
                 }
                 c.count++
-				c.visited.push(url)
+				c.visited[url]=true
 
                 c.mu.Unlock()
 

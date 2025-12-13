@@ -6,9 +6,6 @@ import (
 )
 
 
-
-
-
 func main() {
 	start:=time.Now()
 	myCrawler:=Crawler{
