@@ -1,4 +1,4 @@
-# http_client
+# Web Crawler + Basic Search Engine using indexes
 
 A basic search engine and web crawler in Go. It crawls pages starting from one or more seed URLs, tokenizes content, and builds an in-memory index to answer simple keyword searches. Concurrency keeps crawling and fetching snappy, and the code is split into small, focused modules.
 
