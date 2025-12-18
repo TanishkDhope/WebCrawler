@@ -6,10 +6,65 @@ A basic search engine and web crawler in Go. It crawls pages starting from one o
 
 - Concurrent crawling and fetching of web pages
 - In-memory indexing of page content for keyword search
+- **TF-IDF ranking** for relevance-based search results
 - Simple `stack` abstraction for crawl traversal
 - `tokens` helpers for parsing/normalizing text
 - Optional `dbOps` to persist results, if enabled
 - Clear separation of concerns across files
+
+## Search Theory: TF-IDF
+
+This search engine uses **TF-IDF (Term Frequency-Inverse Document Frequency)** to rank search results by relevance.
+
+### How It Works
+
+**TF-IDF** is a numerical statistic that reflects how important a word is to a document in a collection of documents. It combines two metrics:
+
+#### 1. Term Frequency (TF)
+
+Measures how often a term appears in a document:
+
+```
+TF(t, d) = (Number of times term t appears in document d) / (Total number of terms in document d)
+```
+
+A higher TF means the term is more prominent in that specific document.
+
+#### 2. Inverse Document Frequency (IDF)
+
+Measures how rare or common a term is across all documents:
+
+```
+IDF(t) = log(Total number of documents / Number of documents containing term t)
+```
+
+A higher IDF means the term is rarer and likely more meaningful (e.g., "algorithm" vs "the").
+
+#### 3. TF-IDF Score
+
+The final relevance score combines both:
+
+```
+TF-IDF(t, d) = TF(t, d) × IDF(t)
+```
+
+For multi-term queries, the scores are summed or averaged across all query terms.
+
+### Why TF-IDF?
+
+- **Simple & Effective**: Works well for keyword-based search without machine learning
+- **Balances Frequency & Rarity**: Common words (like "the", "is") get low scores; meaningful terms get high scores
+- **Fast Computation**: Can be pre-computed and stored in the index for quick lookups
+- **Language-Agnostic**: Works with any tokenized text
+
+### Example
+
+For query "golang concurrency":
+
+- Pages with both terms score highest
+- Pages where these terms appear frequently (high TF) rank higher
+- Pages where these terms are rare across the corpus (high IDF) also rank higher
+- Common words are naturally de-emphasized
 
 ## Project Structure
 

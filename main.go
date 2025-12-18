@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/boltdb/bolt"
+	"time"
 
+	"github.com/boltdb/bolt"
 )
 
 func main() {
@@ -30,13 +31,14 @@ func main() {
 			fmt.Println("Enter url to Crawl and limit: ")
 			fmt.Scan(&url,&limit)
 			myCrawler.url=url
+			start:=time.Now()
 			myCrawler.crawl(limit,db)
-
+			fmt.Println(time.Since(start))
 		case 2:
 		var query string
 		fmt.Printf("Enter Search words: ")
 		fmt.Scan(&query)
-		results:=search(db,query)
+		results:=search(db,query,10)
 		fmt.Println(results)
 		default:
 			return

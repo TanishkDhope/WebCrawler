@@ -2,42 +2,32 @@ package main
 
 import (
 	"sync"
-	//"fmt"
 	"github.com/boltdb/bolt"
-
-
 )
+
 
 
 type Crawler struct{
 	url string
 	count int
 	limit int
-	visited map[string] bool
+	visited map[string]bool
 	mu sync.Mutex
 }
 
-/*
-func (c *Crawler) incr(){
-	c.mu.Lock()
-	defer c.mu.Unlock()
-	c.count++
-}
-*/
+
 func (c *Crawler) crawl(limit int,db *bolt.DB){
 
+	c.visited=make(map[string]bool)
 
-
-	c.visited=make(map[string] bool)
-	
 	c.limit=limit
-
 	var wg sync.WaitGroup
 
 	links:=Stack[string]{
 		data: make([]string, 0),
 		len: 0,
 	}
+    
 	links.push(c.url)
 	  workerCount := 20
 
@@ -47,14 +37,6 @@ func (c *Crawler) crawl(limit int,db *bolt.DB){
             defer wg.Done()
 
             for {
-                // Stop condition
-                c.mu.Lock()
-                if c.count >= c.limit {
-                    c.mu.Unlock()
-                    return
-                }
-                c.mu.Unlock()
-
                 // Try to pop a URL
                 links.mu.Lock()
                 if links.len == 0 {
